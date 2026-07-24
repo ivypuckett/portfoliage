@@ -15,6 +15,11 @@ module.exports = function (eleventyConfig) {
   // Serve the raw canonical Markdown verbatim: content/index.md -> /index.md.
   eleventyConfig.addPassthroughCopy("content/*.md");
 
+  // Interactive web tools are self-contained HTML/JS widgets, not canonical
+  // Markdown, so they live outside content/ and are copied straight through:
+  // src/tools/palette-generator/ -> /tools/palette-generator/.
+  eleventyConfig.addPassthroughCopy({ "src/tools": "tools" });
+
   // Map a page's HTML url to its Markdown twin url ("/" -> "/index.md",
   // "/about/" -> "/about.md").
   eleventyConfig.addFilter("mdUrl", (url) =>

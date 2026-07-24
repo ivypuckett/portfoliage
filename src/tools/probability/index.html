@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Probability — Ivy Puckett</title>
+  <meta name="description" content="Calculate the probability distribution of rolling multiple dice." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎲</text></svg>" />
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #ffffff;
+      --fg: #1a1a1a;
+      --muted: #666;
+      --accent: #2e7d5b;
+      --card: #f5f6f5;
+      --border: #e2e4e3;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f1211;
+        --fg: #e8eae9;
+        --muted: #9aa3a0;
+        --accent: #5fd6a0;
+        --card: #171b1a;
+        --border: #262b29;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.6;
+      padding: 2rem 1.25rem 4rem;
+    }
+    main { max-width: 680px; margin: 0 auto; }
+    .back { display: inline-block; text-decoration: none; color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .back:hover { color: var(--accent); }
+    .badge { display: inline-block; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+    h1 { font-size: clamp(1.9rem, 5vw, 2.75rem); margin: 0.25rem 0 1.5rem; }
+    form { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 1.5rem; }
+    label { color: var(--muted); font-size: 0.95rem; }
+    input[type="number"] { width: 5rem; margin-left: 0.4rem; padding: 0.35rem; background: var(--card); color: var(--fg); border: 1px solid var(--border); border-radius: 0.4rem; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); }
+    th { color: var(--muted); font-weight: 600; }
+    footer { margin-top: 3rem; font-size: 0.85rem; color: var(--muted); }
+    footer a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <main>
+    <a class="back" href="/">← 🌿 Ivy Puckett</a>
+    <div class="badge">Web tool</div>
+    <h1>Probability</h1>
+
+    <form>
+      <label>Die Count: <input type="number" id="dice" value="2" onchange="resetProbabilityTable()"></label>
+      <label>Sides per die: <input type="number" id="sides" value="6" onchange="resetProbabilityTable()"></label>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Roll</th>
+          <th>x / y</th>
+          <th>%</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <footer>Part of <a href="/">Ivy Puckett's</a> portfolio.</footer>
+  </main>
+
+  <script>
+    // Query universe
+    const $ = {
+      get: (s) => document.querySelector(s),
+      create: (e) => document.createElement(e)
+    };
+
+    const $tbody = $.get('tbody');
+
+    const resetProbabilityTable = () => {
+      clearTable()
+
+      let { count, totalAndProbabilityMap } = calculate();
+      for (const e of totalAndProbabilityMap.entries()) {
+        const [key, value] = e
+        addProbability(count, key, value)
+      }
+    }
+
+    const addProbability = (count, total, probability) => {
+      const $row = $.create('tr')
+
+      const $roll = $.create('td')
+      $roll.innerText = total
+
+      const $xOfY = $.create('td')
+      $xOfY.innerText = `${probability}/${count}`
+
+      const $percentage = $.create('td')
+      $percentage.innerText = `${((probability / count) * 100).toPrecision(2)} %`
+
+      $row.appendChild($roll)
+      $row.appendChild($xOfY)
+      $row.appendChild($percentage)
+
+      $tbody.appendChild($row);
+    }
+
+    const clearTable = () => { $tbody.querySelectorAll('*').forEach(n => n.remove()) }
+
+    // Calculate probabilities
+    const calculate = () => {
+      const dice = getDice()
+      const unwrappedDice = unwrapDice(dice)
+
+      const combinations = getCombinations(unwrappedDice)
+
+      const probabilityMap = combinations
+        .map(sumArray)
+        .reduce(mapCounts, new Map());
+
+      return { count: combinations.length, totalAndProbabilityMap: probabilityMap }
+    }
+
+    const unwrapDice = (dice) => {
+      const unwrappedDice = []
+      let currentDie = 0
+
+      for (let d of dice) {
+        unwrappedDice[currentDie] = []
+        for (let i = 1; i <= d; i++) {
+          unwrappedDice[currentDie].push(i)
+        }
+        currentDie += 1
+      }
+
+      return unwrappedDice;
+    }
+
+    const sumArray = (arr) => arr.reduce((a, b) => a + b);
+
+    const mapCounts = (total, nextVal) => {
+      if (total.has(nextVal)) {
+        const count = total.get(nextVal);
+        total.set(nextVal, count + 1)
+      } else {
+        total.set(nextVal, 1);
+      }
+
+      return total;
+    };
+
+    const getCombinations = (array) => {
+      return getCombinationsInner(0, [], array)
+    }
+
+    const getCombinationsInner = (column, indices, array) => {
+      let result = []
+      for (let i = 0; i < array[column].length; i++) {
+        const nextIndices = [...indices, array[column][i]]
+        if (column + 1 >= array.length) {
+          result.push([nextIndices])
+        } else {
+          result.push(getCombinationsInner(column + 1, nextIndices, array))
+        }
+      }
+      return result.flat(1)
+    }
+
+    const getDice = () => {
+      let dice = []
+
+      let dieCount = parseInt($.get('#dice').value)
+      for (let i = 0; i < dieCount; i++) {
+        dice.push(parseInt($.get('#sides').value))
+      }
+
+      return dice
+    }
+
+    // Run program
+    window.onload = () => resetProbabilityTable()
+  </script>
+</body>
+</html>

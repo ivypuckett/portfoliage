@@ -1,10 +1,29 @@
 ---
 title: Ivy Puckett
-description: Portfolio of Ivy Puckett — a web ring linking everything I've built across the web.
+description: Portfolio of Ivy Puckett — the software Ivy has built, plus a web ring linking everything else.
 ---
 More to come soon.
 
-- [winstonpuckett.com](https://winstonpuckett.com)
+## Software
+
+### Web tools
+
+- [Palette Generator](/tools/palette-generator/)
+- [Probability](/tools/probability/)
+
+### Libraries
+
+- [Pipe Extensions](/pipe-extensions/)
+- [Result Extensions](/result-extensions/)
+- [Eleventy Reasonable](/eleventy-reasonable/)
+
+### Apps
+
+- [Lucifer](/lucifer/)
+- [Blog Generator](/blog-generator/)
+
+## Elsewhere
+
 - [neoplumes.com](https://neoplumes.com)
 - [Onymous Games](https://github.com/onymousgames)
 - [github.com/ivypuckett](https://github.com/ivypuckett)
