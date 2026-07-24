@@ -2,7 +2,7 @@
 title: Ivy Puckett
 description: Portfolio of Ivy Puckett — a web ring linking everything I've built across the web.
 ---
-I've done a lot throughout my time on earth, and this site is going to represent all of it. It starts as a web ring tying together the places I've built things — over time I'll collapse those into this one home.
+More to come soon.
 
 - [winstonpuckett.com](https://winstonpuckett.com)
 - [neoplumes.com](https://neoplumes.com)
