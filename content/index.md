@@ -25,8 +25,8 @@ More to come soon.
 ## Connect with me
 
 - [LinkedIn](https://linkedin.com/in/ivypkt)
-- [GitHub — ivypuckett](https://github.com/ivypuckett)
-- [GitHub — ivy-puckett](https://github.com/ivy-puckett)
+- [GitHub — ivy-puckett (professional)](https://github.com/ivy-puckett)
+- [GitHub — ivypuckett (personal)](https://github.com/ivypuckett)
 - [YouTube — @neoplumes](https://youtube.com/@neoplumes)
 - [Bluesky](https://bsky.app/profile/ivypuckett.bsky.social)
 - [Dev.to](https://dev.to/ivypuckett)
