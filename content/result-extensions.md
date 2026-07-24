@@ -28,4 +28,4 @@ but Intellisense provides great docs if you want to take a look.
 ## Links
 
 - [NuGet: WinstonPuckett.ResultExtensions](https://www.nuget.org/packages/WinstonPuckett.ResultExtensions)
-- [Source code](https://github.com/winstonpuckett/WinstonPuckett.ResultExtensions)
+- [Source code](https://github.com/ivy-puckett/WinstonPuckett.ResultExtensions)

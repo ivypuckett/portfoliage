@@ -39,4 +39,4 @@ That's it. It's licensed under MIT, so it's fine for commercial projects too.
 
 ## Links
 
-- [Source code](https://github.com/winstonpuckett/generator-eleventy-reasonable)
+- [Source code](https://github.com/ivy-puckett/generator-eleventy-reasonable)

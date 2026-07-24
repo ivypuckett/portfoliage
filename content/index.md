@@ -22,10 +22,6 @@ More to come soon.
 - [Lucifer](/lucifer/)
 - [Blog Generator](/blog-generator/)
 
-### Articles
-
-- [Bit DS](/bit-ds/)
-
 ## Elsewhere
 
 - [neoplumes.com](https://neoplumes.com)

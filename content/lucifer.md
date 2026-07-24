@@ -32,4 +32,4 @@ system.
 ## Links
 
 - [Install from crates.io: lucifer-testing](https://crates.io/crates/lucifer-testing)
-- [Source code](https://github.com/winstonpuckett/lucifer)
+- [Source code](https://github.com/ivy-puckett/lucifer)

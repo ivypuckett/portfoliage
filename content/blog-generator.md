@@ -27,4 +27,4 @@ dev.to at the time, I decided to write my own.
 
 ## Links
 
-- [Source code](https://github.com/winstonpuckett/blog)
+- [Source code](https://github.com/ivy-puckett/blog)
