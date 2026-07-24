@@ -3,9 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ivy Puckett — Portfolio</title>
-  <meta name="description" content="Portfolio of Ivy Puckett." />
+  <title>{{ title or site.title }}</title>
+  <meta name="description" content="{{ description or site.description }}" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>" />
+  {# Point agents/LLMs at the Markdown twin of this page. #}
+  <link rel="alternate" type="text/markdown" href="{{ page.url }}index.md" title="Markdown version" />
   <style>
     :root {
       color-scheme: light dark;
@@ -47,32 +49,40 @@
       font-weight: 600;
     }
     h1 { font-size: clamp(2rem, 6vw, 3.25rem); margin: 0.25rem 0 0.5rem; }
-    p.lead { font-size: 1.15rem; color: var(--muted); margin-top: 0; }
-    .links { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.75rem; }
-    .links a {
+    /* The first paragraph of Markdown content reads as the lead. */
+    .content > p:first-of-type { font-size: 1.15rem; color: var(--muted); margin-top: 0; }
+    .content a { color: var(--accent); }
+    /* A top-level Markdown list renders as a row of link buttons. */
+    .content ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.75rem;
+    }
+    .content ul a {
       text-decoration: none;
       color: var(--fg);
       background: var(--card);
       padding: 0.6rem 1.1rem;
       border-radius: 0.6rem;
       font-weight: 500;
+      display: inline-block;
       transition: transform 0.12s ease, color 0.12s ease;
     }
-    .links a:hover { transform: translateY(-2px); color: var(--accent); }
+    .content ul a:hover { transform: translateY(-2px); color: var(--accent); }
     footer { margin-top: 2.5rem; font-size: 0.85rem; color: var(--muted); }
   </style>
 </head>
 <body>
   <main>
     <span class="badge">🌿 Portfoliage</span>
-    <h1>Ivy Puckett</h1>
-    <p class="lead">Building things on the web. This is the start of my portfolio — more to come soon.</p>
-    <nav class="links">
-      <a href="https://github.com/ivypuckett">GitHub</a>
-      <!-- To add a contact email, put it back here, e.g.:
-           <a href="mailto:you@example.com">Email</a> -->
-    </nav>
-    <footer>Served statically on Fly.io.</footer>
+    <h1>{{ title or site.title }}</h1>
+    <div class="content">
+      {{ content | safe }}
+    </div>
+    <footer>Served statically on Fly.io. <a href="{{ page.url }}index.md">Markdown version →</a></footer>
   </main>
 </body>
 </html>

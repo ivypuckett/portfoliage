@@ -1,6 +1,7 @@
 .git
 fly.toml
-Dockerfile
-.dockerignore
 README.md
 LICENSE
+node_modules
+_site
+.cache

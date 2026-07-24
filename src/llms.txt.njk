@@ -1,0 +1,13 @@
+---
+# Discovery index for agents/LLMs — https://llmstxt.org
+permalink: "/llms.txt"
+eleventyExcludeFromCollections: true
+---
+# {{ site.title }}
+
+> {{ site.description }}
+
+## Pages
+{% for doc in collections.page %}
+- [{{ doc.data.title }}]({{ site.url }}{{ doc.url }}index.md){% if doc.data.description %}: {{ doc.data.description }}{% endif %}
+{%- endfor %}
