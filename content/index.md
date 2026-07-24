@@ -22,6 +22,15 @@ More to come soon.
 - [Lucifer](/lucifer/)
 - [Blog Generator](/blog-generator/)
 
+## Connect with me
+
+- [LinkedIn](https://linkedin.com/in/ivypkt)
+- [GitHub — ivypuckett](https://github.com/ivypuckett)
+- [GitHub — ivy-puckett](https://github.com/ivy-puckett)
+- [YouTube — @neoplumes](https://youtube.com/@neoplumes)
+- [Bluesky](https://bsky.app/profile/ivypuckett.bsky.social)
+- [Dev.to](https://dev.to/ivypuckett)
+
 ## Elsewhere
 
 - [neoplumes.com](https://neoplumes.com)
