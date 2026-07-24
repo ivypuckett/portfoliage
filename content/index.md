@@ -35,6 +35,4 @@ More to come soon.
 
 - [neoplumes.com](https://neoplumes.com)
 - [Onymous Games](https://github.com/onymousgames)
-- [github.com/ivypuckett](https://github.com/ivypuckett)
-- [github.com/ivy-puckett](https://github.com/ivy-puckett)
 - [ivypuckett.github.io](https://ivypuckett.github.io)
