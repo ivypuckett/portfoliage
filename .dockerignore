@@ -1,0 +1,6 @@
+.git
+fly.toml
+Dockerfile
+.dockerignore
+README.md
+LICENSE

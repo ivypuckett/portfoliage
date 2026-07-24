@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ivy Puckett — Portfolio</title>
+  <meta name="description" content="Portfolio of Ivy Puckett." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>" />
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #ffffff;
+      --fg: #1a1a1a;
+      --muted: #666;
+      --accent: #2e7d5b;
+      --card: #f5f6f5;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f1211;
+        --fg: #e8eae9;
+        --muted: #9aa3a0;
+        --accent: #5fd6a0;
+        --card: #171b1a;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.6;
+      display: flex;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    main { max-width: 640px; width: 100%; }
+    .badge {
+      display: inline-block;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    h1 { font-size: clamp(2rem, 6vw, 3.25rem); margin: 0.25rem 0 0.5rem; }
+    p.lead { font-size: 1.15rem; color: var(--muted); margin-top: 0; }
+    .links { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.75rem; }
+    .links a {
+      text-decoration: none;
+      color: var(--fg);
+      background: var(--card);
+      padding: 0.6rem 1.1rem;
+      border-radius: 0.6rem;
+      font-weight: 500;
+      transition: transform 0.12s ease, color 0.12s ease;
+    }
+    .links a:hover { transform: translateY(-2px); color: var(--accent); }
+    footer { margin-top: 2.5rem; font-size: 0.85rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <main>
+    <span class="badge">🌿 Portfoliage</span>
+    <h1>Ivy Puckett</h1>
+    <p class="lead">Building things on the web. This is the start of my portfolio — more to come soon.</p>
+    <nav class="links">
+      <a href="mailto:ivypuckett@proton.me">Email</a>
+      <a href="https://github.com/ivypuckett">GitHub</a>
+    </nav>
+    <footer>Served statically on Fly.io.</footer>
+  </main>
+</body>
+</html>
