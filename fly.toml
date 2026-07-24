@@ -1,0 +1,29 @@
+# fly.toml — static site for portfoliage
+#
+# Adjust `app` and `primary_region` below before your first deploy
+# (or let `fly launch` fill them in). Region codes: https://fly.io/docs/reference/regions/
+
+app = "portfoliage"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile"
+
+# The web process. gostatic serves the site and keeps the Machine bootable.
+[http_service]
+  internal_port = 8043
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+# Proxy-level static serving. Requests under url_prefix are served straight
+# from the Machine filesystem by fly-proxy (fast path), falling back to the
+# gostatic process for anything else (e.g. directory index resolution).
+[[statics]]
+  guest_path = "/srv/http"
+  url_prefix = "/"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"
