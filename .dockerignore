@@ -1,5 +1,4 @@
 .git
-.github
 fly.toml
 Dockerfile
 .dockerignore
