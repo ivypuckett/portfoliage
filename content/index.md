@@ -22,10 +22,17 @@ More to come soon.
 - [Lucifer](/lucifer/)
 - [Blog Generator](/blog-generator/)
 
+## Connect with me
+
+- [LinkedIn](https://linkedin.com/in/ivypkt)
+- [GitHub — ivy-puckett (professional)](https://github.com/ivy-puckett)
+- [GitHub — ivypuckett (open source)](https://github.com/ivypuckett)
+- [YouTube — @neoplumes](https://youtube.com/@neoplumes)
+- [Bluesky](https://bsky.app/profile/ivypuckett.bsky.social)
+- [Dev.to](https://dev.to/ivypuckett)
+
 ## Elsewhere
 
 - [neoplumes.com](https://neoplumes.com)
 - [Onymous Games](https://github.com/onymousgames)
-- [github.com/ivypuckett](https://github.com/ivypuckett)
-- [github.com/ivy-puckett](https://github.com/ivy-puckett)
 - [ivypuckett.github.io](https://ivypuckett.github.io)
