@@ -19,20 +19,19 @@ so that **one rule** decides what agents can read:
 | Directory | Role | Agent-visible? |
 |---|---|---|
 | [`content/*.md`](./content) | The canonical Markdown store — everything authored. | ✅ Served verbatim at `/<slug>.md`. |
-| [`src/`](./src) | Pure machinery: the layout, the page compiler, the `llms.txt` template, data. | ❌ Never served as content. |
+| [`src/`](./src) | Pure machinery: the layout and site data. | ❌ Never served as content. |
 
-At build time [Eleventy](https://www.11ty.dev):
+At build time [Eleventy](https://www.11ty.dev) does two things with each
+`content/*.md` file — no custom parsing, both native:
 
-1. **Serves each `content/*.md` file untouched** (passthrough copy) at its `.md`
-   URL — so what an agent fetches is *byte-for-byte the file you edit*.
-2. **Compiles HTML from the same files** — [`src/_data/pages.js`](./src/_data/pages.js)
-   parses each one; [`src/pages.11ty.js`](./src/pages.11ty.js) renders the
-   Markdown into [`src/_includes/base.njk`](./src/_includes/base.njk).
-3. **Generates [`/llms.txt`](https://llmstxt.org)** — a discovery index pointing
-   agents at every `.md` URL (see [`src/llms.txt.njk`](./src/llms.txt.njk)).
+1. **Renders it to HTML** into [`src/_includes/base.njk`](./src/_includes/base.njk).
+2. **Passthrough-copies the raw file** to its `.md` URL — so what an agent
+   fetches is *byte-for-byte the file you edit*.
 
-Because the served Markdown *is* the source file (not a regenerated copy), the
-human and agent views can't drift. Each HTML page also carries a
+It also generates a [`/llms.txt`](https://llmstxt.org) discovery index (defined
+in [`eleventy.config.js`](./eleventy.config.js)) pointing agents at every `.md`
+URL. Because the served Markdown *is* the source file — not a regenerated copy —
+the human and agent views can't drift. Each HTML page also carries a
 `<link rel="alternate" type="text/markdown" …>` pointing at its Markdown.
 
 ### Adding a page
@@ -49,8 +48,9 @@ list renders as a row of link buttons.
 ```
 
 `content/about.md` is served at `/about.md` and compiled to `/about/`. It's
-picked up automatically — no wiring. (`order:` in front matter controls its
-position in `llms.txt`.)
+picked up automatically — no wiring. The `layout`/`tags` plumbing lives in
+[`content/content.11tydata.js`](./content/content.11tydata.js), so the served
+`.md` carries only meaningful metadata (`title`, `description`).
 
 ### Keeping something away from agents
 
@@ -61,7 +61,7 @@ notes, presentational scaffolding — simply lives outside `content/`.
 
 ## Stack
 
-- **Generator:** [Eleventy](https://www.11ty.dev) (`eleventy.config.js`) with [`markdown-it`](https://github.com/markdown-it/markdown-it) — `content/` Markdown → HTML + verbatim Markdown + `llms.txt`.
+- **Generator:** [Eleventy](https://www.11ty.dev) (`eleventy.config.js`) with its built-in Markdown rendering — `content/` Markdown → HTML + verbatim Markdown + `llms.txt`. No plugins.
 - **Server:** [`gostatic`](https://github.com/PierreZ/goStatic), a ~4MB static file server (see [`Dockerfile`](./Dockerfile)).
 - **Edge:** Fly's proxy-level [`[[statics]]`](https://fly.io/docs/reference/configuration/#the-statics-sections) fast-path (see [`fly.toml`](./fly.toml)).
 - **Deploys:** manual, via `fly deploy` (a multi-stage Docker build runs Eleventy, then copies `_site/` into the server image).
