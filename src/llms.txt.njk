@@ -8,6 +8,6 @@ eleventyExcludeFromCollections: true
 > {{ site.description }}
 
 ## Pages
-{% for doc in collections.page %}
-- [{{ doc.data.title }}]({{ site.url }}{{ doc.url }}index.md){% if doc.data.description %}: {{ doc.data.description }}{% endif %}
+{% for p in pages %}
+- [{{ p.title }}]({{ site.url }}{{ p.mdUrl }}){% if p.description %}: {{ p.description }}{% endif %}
 {%- endfor %}

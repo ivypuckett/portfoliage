@@ -6,8 +6,8 @@
   <title>{{ title or site.title }}</title>
   <meta name="description" content="{{ description or site.description }}" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>" />
-  {# Point agents/LLMs at the Markdown twin of this page. #}
-  <link rel="alternate" type="text/markdown" href="{{ page.url }}index.md" title="Markdown version" />
+  {# Point agents/LLMs at the raw Markdown source of this page. #}
+  <link rel="alternate" type="text/markdown" href="{{ mdUrl }}" title="Markdown version" />
   <style>
     :root {
       color-scheme: light dark;
@@ -82,7 +82,7 @@
     <div class="content">
       {{ content | safe }}
     </div>
-    <footer>Served statically on Fly.io. <a href="{{ page.url }}index.md">Markdown version →</a></footer>
+    <footer>Served statically on Fly.io. <a href="{{ mdUrl }}">Markdown version →</a></footer>
   </main>
 </body>
 </html>
