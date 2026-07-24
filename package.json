@@ -1,0 +1,16 @@
+{
+  "name": "portfoliage",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "description": "Ivy Puckett's portfolio — published as human-readable HTML and agent-readable Markdown.",
+  "scripts": {
+    "build": "eleventy",
+    "serve": "eleventy --serve",
+    "clean": "rm -rf _site"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@11ty/eleventy": "^3.0.0"
+  }
+}
