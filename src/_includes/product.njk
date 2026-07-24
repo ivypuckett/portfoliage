@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ title }} — {{ site.title }}</title>
+  <meta name="description" content="{{ description or site.description }}" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>" />
+  {# Point agents/LLMs at the raw Markdown source of this page. #}
+  <link rel="alternate" type="text/markdown" href="{{ page.url | mdUrl }}" title="Markdown version" />
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #ffffff;
+      --fg: #1a1a1a;
+      --muted: #666;
+      --accent: #2e7d5b;
+      --card: #f5f6f5;
+      --border: #e2e4e3;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f1211;
+        --fg: #e8eae9;
+        --muted: #9aa3a0;
+        --accent: #5fd6a0;
+        --card: #171b1a;
+        --border: #262b29;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.65;
+      padding: 2rem 1.25rem 4rem;
+    }
+    main { max-width: 680px; margin: 0 auto; }
+    .back {
+      display: inline-block;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 1.75rem;
+    }
+    .back:hover { color: var(--accent); }
+    .badge {
+      display: inline-block;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    h1 { font-size: clamp(1.9rem, 5vw, 2.75rem); margin: 0.25rem 0 1rem; line-height: 1.15; }
+    .content h2 { font-size: 1.35rem; margin: 2.25rem 0 0.5rem; }
+    .content h3 { font-size: 1.1rem; margin: 1.75rem 0 0.5rem; }
+    .content > p:first-of-type { font-size: 1.2rem; color: var(--muted); }
+    .content a { color: var(--accent); }
+    .content ul, .content ol { padding-left: 1.25rem; }
+    .content li { margin: 0.3rem 0; }
+    .content code {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.35rem;
+      padding: 0.1rem 0.35rem;
+      font-size: 0.9em;
+    }
+    .content pre {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.6rem;
+      padding: 1rem;
+      overflow-x: auto;
+    }
+    .content pre code { background: none; border: none; padding: 0; }
+    hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+    footer { margin-top: 3rem; font-size: 0.85rem; color: var(--muted); }
+    footer a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <main>
+    <a class="back" href="/">← 🌿 {{ site.title }}</a>
+    {% if category %}<div class="badge">{{ category }}</div>{% endif %}
+    <h1>{{ title }}</h1>
+    <article class="content">
+      {{ content | safe }}
+    </article>
+    <footer>Served statically on Fly.io. <a href="{{ page.url | mdUrl }}">Markdown version →</a></footer>
+  </main>
+</body>
+</html>
