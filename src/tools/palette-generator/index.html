@@ -173,83 +173,39 @@
     // pending reset of the copy button's transient label
     let copyResetTimer
 
+    // Where each scheme puts its hues, in degrees from the chosen hue. Analogous
+    // sits either side of that hue rather than starting on it, so the Hue slider
+    // stays the middle of the run; split complementary flanks the complement at
+    // 180 ± 30 instead of dividing the wheel evenly.
+    const schemeHueOffsets = {
+      single: [0],
+      complementary: [0, 180],
+      splitComplementary: [0, 150, 210],
+      triad: [0, 120, 240],
+      square: [0, 90, 180, 270],
+      analogous: [-30, 0, 30]
+    }
+
     // main
     function updatePalette() {
-      let rotations = parseInt(document.querySelector('#rotations').value)
       let paletteType = document.querySelector("#paletteType").value
-      switch (paletteType) {
-        case "single":
-          hideRotations()
-          rotations = 1
-          palette = getColorPaletteFromRotations({
-            startingHue: parseInt(document.querySelector('#startingHue').value),
-            hueShift: parseFloat(document.querySelector('#shift').value) / 100,
-            saturation: parseInt(document.querySelector('#saturation').value),
-            saturationShift: parseInt(document.querySelector('#saturationShift').value) / 100,
-            dynamicRange: parseInt(document.querySelector('#dynamicRange').value),
-            rotations: rotations
-          })
-          break;
-        case "complementary":
-          hideRotations()
-          rotations = 2
-          palette = getColorPaletteFromRotations({
-            startingHue: parseInt(document.querySelector('#startingHue').value),
-            hueShift: parseFloat(document.querySelector('#shift').value) / 100,
-            saturation: parseInt(document.querySelector('#saturation').value),
-            saturationShift: parseInt(document.querySelector('#saturationShift').value) / 100,
-            dynamicRange: parseInt(document.querySelector('#dynamicRange').value),
-            rotations: rotations
-          })
-          break
-        case "triad":
-          hideRotations()
-          rotations = 3
-          palette = getColorPaletteFromRotations({
-            startingHue: parseInt(document.querySelector('#startingHue').value),
-            hueShift: parseFloat(document.querySelector('#shift').value) / 100,
-            saturation: parseInt(document.querySelector('#saturation').value),
-            saturationShift: parseInt(document.querySelector('#saturationShift').value) / 100,
-            dynamicRange: parseInt(document.querySelector('#dynamicRange').value),
-            rotations: rotations
-          })
-          break
-        case "square":
-          hideRotations()
-          rotations = 4
-          palette = getColorPaletteFromRotations({
-            startingHue: parseInt(document.querySelector('#startingHue').value),
-            hueShift: parseFloat(document.querySelector('#shift').value) / 100,
-            saturation: parseInt(document.querySelector('#saturation').value),
-            saturationShift: parseInt(document.querySelector('#saturationShift').value) / 100,
-            dynamicRange: parseInt(document.querySelector('#dynamicRange').value),
-            rotations: rotations
-          })
-          break
-        case "splitComplementary":
-          hideRotations()
-          palette = getColorPaletteFromRotations({
-            startingHue: parseInt(document.querySelector('#startingHue').value),
-            hueShift: parseFloat(document.querySelector('#shift').value) / 100,
-            saturation: parseInt(document.querySelector('#saturation').value),
-            saturationShift: parseInt(document.querySelector('#saturationShift').value) / 100,
-            dynamicRange: parseInt(document.querySelector('#dynamicRange').value),
-            rotations: rotations
-          })
-          break
-        case "rotations":
-          showRotations()
-          palette = getColorPaletteFromRotations({
-            startingHue: parseInt(document.querySelector('#startingHue').value),
-            hueShift: parseFloat(document.querySelector('#shift').value) / 100,
-            saturation: parseInt(document.querySelector('#saturation').value),
-            saturationShift: parseInt(document.querySelector('#saturationShift').value) / 100,
-            dynamicRange: parseInt(document.querySelector('#dynamicRange').value),
-            rotations: rotations
-          })
-          break
-        default:
-          break;
+      let options = {
+        startingHue: parseInt(document.querySelector('#startingHue').value),
+        hueShift: parseFloat(document.querySelector('#shift').value) / 100,
+        saturation: parseInt(document.querySelector('#saturation').value),
+        saturationShift: parseInt(document.querySelector('#saturationShift').value) / 100,
+        dynamicRange: parseInt(document.querySelector('#dynamicRange').value)
+      }
+
+      if (paletteType === 'rotations') {
+        showRotations()
+        palette = getColorPaletteFromRotations({
+          ...options,
+          rotations: parseInt(document.querySelector('#rotations').value)
+        })
+      } else {
+        hideRotations()
+        palette = getColorPaletteFromOffsets({ ...options, hueOffsets: schemeHueOffsets[paletteType] })
       }
 
       createButtonsAndUpdateCssVariables(palette)
@@ -260,11 +216,20 @@
 
     // color calculations
     function getColorPaletteFromRotations({ startingHue, hueShift, saturation, saturationShift, dynamicRange, rotations }) {
+      let rotationStop = Math.floor(360 / rotations)
+      let hueOffsets = []
+
+      for (let i = 0; i < rotations; i++) {
+        hueOffsets[i] = i * rotationStop
+      }
+
+      return getColorPaletteFromOffsets({ startingHue, hueShift, saturation, saturationShift, dynamicRange, hueOffsets })
+    }
+    function getColorPaletteFromOffsets({ startingHue, hueShift, saturation, saturationShift, dynamicRange, hueOffsets }) {
       let range = []
 
-      let rotationStop = Math.floor(360 / rotations)
-      for (let i = 0; i < rotations; i++) {
-        let hue = (startingHue + (i * rotationStop))
+      for (let i = 0; i < hueOffsets.length; i++) {
+        let hue = startingHue + hueOffsets[i]
         range[i] = getColorRange({ dynamicRange, hueShift, startingHue: hue, saturation, saturationShift })
       }
 
