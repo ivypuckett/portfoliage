@@ -70,6 +70,51 @@
       background-blend-mode: screen;
     }
     #huePreview { margin-top: 1.5rem; }
+
+    #cssExport { margin-top: 2.5rem; }
+    #cssExport h2 { font-size: 1.1rem; margin: 0; }
+    .css-export-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    #copyCss {
+      font: inherit;
+      font-size: 0.85rem;
+      padding: 0.35rem 0.8rem;
+      color: var(--bg);
+      background: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 0.4rem;
+      cursor: pointer;
+    }
+    #copyCss:hover { opacity: 0.85; }
+    #copyCss[data-state="copied"] { background: var(--card); color: var(--accent); }
+    #copyCss[data-state="failed"] { background: var(--card); color: var(--muted); border-color: var(--border); }
+    #cssOutput {
+      margin: 0;
+      padding: 1rem;
+      max-height: 22rem;
+      overflow: auto;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.4rem;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      tab-size: 2;
+    }
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
   </style>
 </head>
 <body>
@@ -109,12 +154,24 @@
       <div id="huePreview"></div>
     </form>
 
+    <section id="cssExport">
+      <div class="css-export-head">
+        <h2>CSS</h2>
+        <button id="copyCss" type="button" onclick="copyCss()">Copy CSS</button>
+      </div>
+      <pre id="cssOutput"><code></code></pre>
+      <p id="copyStatus" role="status" aria-live="polite" class="visually-hidden"></p>
+    </section>
+
     <footer>Part of <a href="/">Ivy Puckett's</a> portfolio.</footer>
   </main>
 
   <script>
     // the current color palette
     let palette = {}
+
+    // pending reset of the copy button's transient label
+    let copyResetTimer
 
     // main
     function updatePalette() {
@@ -197,6 +254,7 @@
 
       createButtonsAndUpdateCssVariables(palette)
       updateCanvas(palette)
+      updateCssExport(palette)
     }
     window.onload = updatePalette()
 
@@ -242,7 +300,7 @@
         for (let stop of range) {
           let variableName = `--c-${row}-${column}`
 
-          document.documentElement.style.setProperty(variableName, `hsl(${stop[0]}, ${stop[1]}%, ${stop[2]}%)`)
+          document.documentElement.style.setProperty(variableName, cssColor(stop))
           let child = document.createElement('div')
           child.style = `
             background: var(${variableName});
@@ -302,6 +360,98 @@
         }
       }
     }
+
+    // css export
+    function cssColor([hue, saturation, brightness]) {
+      // Hue is an angle and CSS clamps the percentages, so normalising here keeps
+      // the exported CSS tidy without changing any colour it describes.
+      let h = roundToTenth(((hue % 360) + 360) % 360)
+      let s = roundToTenth(clampPercent(saturation))
+      let l = roundToTenth(clampPercent(brightness))
+
+      return `hsl(${h}, ${s}%, ${l}%)`
+    }
+
+    function clampPercent(value) { return Math.min(100, Math.max(0, value)) }
+    function roundToTenth(value) { return Math.round(value * 10) / 10 }
+
+    function getPaletteCss(palette) {
+      let lines = [':root {']
+
+      let row = 0
+      for (let range of palette) {
+        let column = 0
+
+        for (let stop of range) {
+          lines.push(`  --c-${row}-${column}: ${cssColor(stop)};`)
+          column += 1
+        }
+
+        if (row < palette.length - 1) lines.push('')
+        row += 1
+      }
+
+      lines.push('}')
+      return lines.join('\n')
+    }
+
+    function updateCssExport(palette) {
+      document.querySelector('#cssOutput code').textContent = getPaletteCss(palette)
+      // The palette just changed, so any "Copied!" from a previous palette is stale.
+      resetCopyButton()
+    }
+
+    async function copyCss() {
+      let css = document.querySelector('#cssOutput code').textContent
+      let copied = false
+
+      // Only the clipboard call is guarded, so a failure below can't be mistaken
+      // for the copy itself failing.
+      try {
+        await navigator.clipboard.writeText(css)
+        copied = true
+      } catch {
+        // The clipboard API needs a secure context and permission.
+      }
+
+      if (copied) {
+        flashCopyButton('copied', 'Copied!', 'Palette CSS copied to clipboard.')
+      } else {
+        // Select the CSS so it can still be copied by hand.
+        selectCssOutput()
+        flashCopyButton('failed', 'Press ⌘/Ctrl+C', 'Copying failed. The CSS is selected — press Command or Control C.')
+      }
+    }
+
+    function flashCopyButton(state, label, status) {
+      let button = document.querySelector('#copyCss')
+
+      button.dataset.state = state
+      button.textContent = label
+      document.querySelector('#copyStatus').textContent = status
+
+      clearTimeout(copyResetTimer)
+      copyResetTimer = setTimeout(resetCopyButton, 2500)
+    }
+
+    function resetCopyButton() {
+      let button = document.querySelector('#copyCss')
+
+      clearTimeout(copyResetTimer)
+      delete button.dataset.state
+      button.textContent = 'Copy CSS'
+      document.querySelector('#copyStatus').textContent = ''
+    }
+
+    function selectCssOutput() {
+      let range = document.createRange()
+      range.selectNodeContents(document.querySelector('#cssOutput code'))
+
+      let selection = window.getSelection()
+      selection.removeAllRanges()
+      selection.addRange(range)
+    }
+
     function hideRotations() { document.querySelector('#rotationsWrapper').style = 'display:none;' }
     function showRotations() { document.querySelector('#rotationsWrapper').style = 'display:flex;flex-direction:column;' }
 
