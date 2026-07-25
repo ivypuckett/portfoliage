@@ -11,9 +11,48 @@
 // There is no hand-rolled Markdown parsing here — Eleventy renders the HTML
 // natively, and the raw .md is just the source file copied through.
 
+const site = require("./src/_data/site.json");
+
+const siteHost = new URL(site.url).hostname;
+
+// True for http(s) links that point off this site. Relative and root-relative
+// hrefs resolve against site.url and so come out internal; mailto:, tel: and
+// other schemes are left alone entirely.
+function isExternalLink(href) {
+  try {
+    const url = new URL(href, site.url);
+    return (
+      (url.protocol === "http:" || url.protocol === "https:") &&
+      url.hostname !== siteHost
+    );
+  } catch {
+    return false;
+  }
+}
+
 module.exports = function (eleventyConfig) {
   // Serve the raw canonical Markdown verbatim: content/index.md -> /index.md.
   eleventyConfig.addPassthroughCopy("content/*.md");
+
+  // External links open in a new tab and carry rel="noopener noreferrer":
+  // noopener denies the opened page a window.opener handle back to this one,
+  // noreferrer additionally withholds the Referer header. Applied as a
+  // markdown-it render rule rather than written into ./content by hand, so the
+  // canonical Markdown stays plain, portable Markdown with no HTML in it.
+  eleventyConfig.amendLibrary("md", (md) => {
+    const renderDefault =
+      md.renderer.rules.link_open ||
+      ((tokens, idx, options, env, self) => self.renderToken(tokens, idx, options, env));
+
+    md.renderer.rules.link_open = (tokens, idx, options, env, self) => {
+      const token = tokens[idx];
+      if (isExternalLink(token.attrGet("href") || "")) {
+        token.attrSet("target", "_blank");
+        token.attrSet("rel", "noopener noreferrer");
+      }
+      return renderDefault(tokens, idx, options, env, self);
+    };
+  });
 
   // Interactive web tools are self-contained HTML/JS widgets, not canonical
   // Markdown, so they live outside content/ and are copied straight through:
