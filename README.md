@@ -58,6 +58,15 @@ picked up automatically — no wiring. The `layout`/`tags` plumbing lives in
 [`content/content.11tydata.js`](./content/content.11tydata.js), so the served
 `.md` carries only meaningful metadata (`title`, `description`).
 
+### Adding a web tool
+
+Interactive tools are self-contained HTML/JS widgets, not canonical Markdown, so
+they live in `src/tools/<slug>/index.html`. Everything in `src/tools/` is
+passthrough-copied to the output root, so a tool is served at `/<slug>/` —
+top level, alongside the pages, with no `/tools/` prefix in the URL. Because
+tools and pages share that one namespace, a tool's directory name has to be
+distinct from every `content/*.md` slug.
+
 ### Keeping something away from agents
 
 Don't put it in `content/`. HTML-only chrome (the `🌿 Portfoliage` badge, the

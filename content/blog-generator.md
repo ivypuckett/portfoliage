@@ -1,7 +1,7 @@
 ---
 title: Blog Generator
 description: Using dev.to as a CMS for your blog — a forkable 11ty static site.
-category: App
+category: Library
 layout: product.njk
 ---
 A forkable 11ty site that turns [dev.to](https://dev.to/winstonpuckett) into the CMS for your blog.

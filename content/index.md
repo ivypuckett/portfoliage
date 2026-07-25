@@ -8,19 +8,19 @@ More to come soon.
 
 ### Web tools
 
-- [Palette Generator](/tools/palette-generator/)
-- [Probability](/tools/probability/)
+- [Palette Generator](/palette-generator/)
+- [Probability](/probability/)
 
 ### Libraries
 
 - [Pipe Extensions](/pipe-extensions/)
 - [Result Extensions](/result-extensions/)
 - [Eleventy Reasonable](/eleventy-reasonable/)
+- [Blog Generator](/blog-generator/)
 
 ### Apps
 
 - [Lucifer](/lucifer/)
-- [Blog Generator](/blog-generator/)
 
 ## Connect with me
 

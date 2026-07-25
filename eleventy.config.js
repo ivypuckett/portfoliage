@@ -55,9 +55,11 @@ module.exports = function (eleventyConfig) {
   });
 
   // Interactive web tools are self-contained HTML/JS widgets, not canonical
-  // Markdown, so they live outside content/ and are copied straight through:
-  // src/tools/palette-generator/ -> /tools/palette-generator/.
-  eleventyConfig.addPassthroughCopy({ "src/tools": "tools" });
+  // Markdown, so they live outside content/ and are copied straight through.
+  // The contents of src/tools/ land at the output root, so each tool sits at
+  // the top level alongside the pages: src/tools/palette-generator/ ->
+  // /palette-generator/ — no /tools/ prefix in the URL.
+  eleventyConfig.addPassthroughCopy({ "src/tools": "/" });
 
   // Map a page's HTML url to its Markdown twin url ("/" -> "/index.md",
   // "/about/" -> "/about.md").
