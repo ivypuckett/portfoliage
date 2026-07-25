@@ -16,10 +16,15 @@ so that **one rule** decides what agents can read:
 > If text lives in a file under [`content/`](./content), agents see it.
 > If it doesn't, they don't.
 
+Each directory has exactly **one build role**, and the roles describe *how a
+file is published* — never what kind of thing it is. A tool, a game and a demo
+are all the same thing to the build, so none of them needs a category:
+
 | Directory | Role | Agent-visible? |
 |---|---|---|
 | [`content/*.md`](./content) | The canonical Markdown store — everything authored. | ✅ Served verbatim at `/<slug>.md`. |
-| [`src/`](./src) | Pure machinery: the layout and site data. | ❌ Never served as content. |
+| [`public/`](./public) | Self-contained pages shipped verbatim to the web root. | ❌ Served to humans, absent from the Markdown corpus. |
+| [`src/`](./src) | Pure machinery: the layout and site data. | ❌ Never served at all. |
 
 At build time [Eleventy](https://www.11ty.dev) does two things with each
 `content/*.md` file — no custom parsing, both native:
@@ -58,12 +63,28 @@ picked up automatically — no wiring. The `layout`/`tags` plumbing lives in
 [`content/content.11tydata.js`](./content/content.11tydata.js), so the served
 `.md` carries only meaningful metadata (`title`, `description`).
 
+### Adding a standalone page
+
+Anything self-contained that isn't canonical Markdown — an interactive tool, a
+browser game, a demo — goes in `public/<slug>/index.html`. Everything in
+`public/` is copied verbatim to the output root, so it's served at `/<slug>/`,
+top level alongside the pages. There's no category to pick and no wiring: drop
+the directory in and it ships.
+
+Standalone pages and Markdown pages share that one flat URL namespace, so
+`public/blog/` and `content/blog.md` would both claim `/blog/`. Eleventy won't
+warn about that, so [`eleventy.config.js`](./eleventy.config.js) checks for it
+and fails the build with the offending pair named. Link new pages from
+`content/index.md` so both humans and agents can find them — the page itself
+stays out of the Markdown corpus, but the link to it doesn't have to.
+
 ### Keeping something away from agents
 
 Don't put it in `content/`. HTML-only chrome (the `🌿 Portfoliage` badge, the
 footer) lives in the layout under `src/`, so it never reaches the Markdown or
-`llms.txt`. Anything an agent shouldn't touch — interactive widgets, private
-notes, presentational scaffolding — simply lives outside `content/`.
+`llms.txt`. Anything an agent shouldn't touch simply lives outside `content/`:
+in `public/` if it's a page humans should still reach, in `src/` if it isn't
+served at all.
 
 ## Stack
 

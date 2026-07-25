@@ -1,15 +1,23 @@
 // Eleventy config — builds the site into ./_site.
 //
-// Content model:
+// Content model — three directories, each with exactly one build role. The
+// roles are about *how a file is published*, never about what kind of thing it
+// is, so a new tool, game or demo never needs a new category to live in:
 //   • ./content/*.md   the canonical Markdown store. This is the ONLY place
 //                      agent-visible text lives. Eleventy renders each file to
 //                      HTML *and* passthrough-copies it verbatim to /<slug>.md,
 //                      so what an agent fetches is byte-for-byte the source.
-//   • ./src/           pure machinery/chrome that LLMs never see: the layout
-//                      and site data. Referenced via ../src below.
+//   • ./public/        self-contained pages shipped verbatim to the web root.
+//                      Served to humans, absent from the Markdown corpus and
+//                      llms.txt. public/<slug>/ -> /<slug>/.
+//   • ./src/           pure machinery/chrome that is never served at all: the
+//                      layout and site data. Referenced via ../src below.
 //
 // There is no hand-rolled Markdown parsing here — Eleventy renders the HTML
 // natively, and the raw .md is just the source file copied through.
+
+const fs = require("node:fs");
+const path = require("node:path");
 
 const site = require("./src/_data/site.json");
 
@@ -30,7 +38,39 @@ function isExternalLink(href) {
   }
 }
 
+// ./public and ./content publish into one flat URL namespace, so public/blog/
+// and content/blog.md would both claim /blog/ — the passthrough copy and the
+// rendered page racing to write the same file. Eleventy won't flag that, so
+// fail the build loudly instead of shipping whichever one happened to win.
+function assertNoSlugCollisions() {
+  const publicDir = path.join(__dirname, "public");
+  if (!fs.existsSync(publicDir)) return;
+
+  const publicSlugs = fs
+    .readdirSync(publicDir, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name);
+
+  const contentSlugs = new Set(
+    fs
+      .readdirSync(path.join(__dirname, "content"))
+      .filter((file) => file.endsWith(".md"))
+      .map((file) => path.basename(file, ".md"))
+  );
+
+  const collisions = publicSlugs.filter((slug) => contentSlugs.has(slug));
+  if (collisions.length > 0) {
+    throw new Error(
+      `URL collision: ${collisions
+        .map((slug) => `public/${slug}/ and content/${slug}.md both claim /${slug}/`)
+        .join("; ")}. Rename one of them.`
+    );
+  }
+}
+
 module.exports = function (eleventyConfig) {
+  assertNoSlugCollisions();
+
   // Serve the raw canonical Markdown verbatim: content/index.md -> /index.md.
   eleventyConfig.addPassthroughCopy("content/*.md");
 
@@ -54,10 +94,12 @@ module.exports = function (eleventyConfig) {
     };
   });
 
-  // Interactive web tools are self-contained HTML/JS widgets, not canonical
-  // Markdown, so they live outside content/ and are copied straight through:
-  // src/tools/palette-generator/ -> /tools/palette-generator/.
-  eleventyConfig.addPassthroughCopy({ "src/tools": "tools" });
+  // Everything in public/ is copied verbatim to the output root, so each entry
+  // sits at the top level alongside the pages: public/palette-generator/ ->
+  // /palette-generator/. These are self-contained HTML/JS pages rather than
+  // canonical Markdown, which is the whole reason they live outside content/ —
+  // whether any given one is a tool, a game or a demo makes no difference here.
+  eleventyConfig.addPassthroughCopy({ public: "/" });
 
   // Map a page's HTML url to its Markdown twin url ("/" -> "/index.md",
   // "/about/" -> "/about.md").
