@@ -52,6 +52,8 @@
     /* The first paragraph of Markdown content reads as the lead. */
     .content > p:first-of-type { font-size: 1.15rem; color: var(--muted); margin-top: 0; }
     .content a { color: var(--accent); }
+    /* Flag links that leave the site, since they open in a new tab. */
+    .content a[target="_blank"]::after { content: "↗"; font-size: 0.8em; margin-left: 0.2em; }
     /* A top-level Markdown list renders as a row of link buttons. */
     .content ul {
       list-style: none;

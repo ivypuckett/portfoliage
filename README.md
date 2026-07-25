@@ -34,6 +34,12 @@ URL. Because the served Markdown *is* the source file — not a regenerated copy
 the human and agent views can't drift. Each HTML page also carries a
 `<link rel="alternate" type="text/markdown" …>` pointing at its Markdown.
 
+Links that point off-site are rendered with `target="_blank"` and
+`rel="noopener noreferrer"` by a markdown-it render rule in
+[`eleventy.config.js`](./eleventy.config.js) — so the canonical Markdown stays
+plain Markdown with no HTML in it, while the HTML gets safe new-tab behaviour.
+Relative links and `mailto:`/`tel:` are left untouched.
+
 ### Adding a page
 
 Drop a Markdown file in `content/` with minimal front matter:
